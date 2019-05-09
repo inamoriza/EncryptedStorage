@@ -1,5 +1,6 @@
 package com.crypt.storage.model;
 
+
 public class User {
     private String username;
     private String password;

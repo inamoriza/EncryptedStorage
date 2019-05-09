@@ -22,25 +22,43 @@
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.0/js/mdb.min.js"></script>
 
-    <title>Sign Up</title>
+    <title>Storage</title>
 </head>
 <body>
-<!-- form signUp -->
-<form action="#" th:action="@{/signUp}" th:object="${user}" method ="post" class="text-center border border-light p-5">
+<!-- form login -->
+<form action="#" th:action="@{/}" th:object="${user}" method="post" class="text-center border border-light p-5">
 
-    <p class="h4 mb-4">Sign up</p>
+    <p class="h4 mb-4">Sign in</p>
 
     <!-- Username -->
-    <input type="text" id="username" class="form-control mb-4" th:field=*{username} placeholder="Username">
+    <input type="text" id="username" class="form-control mb-4" th:field="*{username}" placeholder="Username">
 
     <!-- Password -->
-    <input type="password" id="password" class="form-control mb-4" th:field=*{password} placeholder="Password">
+    <input type="password" id="password" class="form-control mb-4" th:field="*{password}" placeholder="Password">
 
-    <!-- Sign up button -->
-    <button class="btn btn-info btn-block my-4" type="submit">Sign up</button>
+    <div class="d-flex justify-content-around">
+        <div>
+            <!-- Remember me -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
+                <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
+            </div>
+        </div>
+        <div>
+            <!-- Forgot password -->
+            <a href="">Forgot password?</a>
+        </div>
+    </div>
 
+    <!-- Sign in button -->
+    <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+
+    <!-- Register -->
+    <p>Not a member?
+        <a href="/signUp">Register</a>
+    </p>
 
 </form>
-<!-- Default form login -->
+
 </body>
 </html>
