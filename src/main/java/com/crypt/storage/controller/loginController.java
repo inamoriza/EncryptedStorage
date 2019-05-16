@@ -16,21 +16,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Collection;
 
 @Controller
 public class loginController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private UserManagment userManagment = new UserManagment();
 
     @RequestMapping("/")
     public String index(Model model){
         model.addAttribute("user", new User());
-        return "index";
+        return "/index";
     }
     @RequestMapping(value="/", method= RequestMethod.POST)
     public String processAddSubmit(@ModelAttribute("user") User user,
@@ -41,12 +38,9 @@ public class loginController {
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        try {
-            userManagment.checkUser(user.getUsername(), user.getPassword());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        userManagment.checkPassword(user.getUsername(), user.getPassword());
+
         session.setAttribute("user", user);
-        return "/success";
+        return "/files/list";
     }
 }

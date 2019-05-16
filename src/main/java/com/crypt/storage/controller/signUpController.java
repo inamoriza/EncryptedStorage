@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.IOException;
-
 @Controller
 public class signUpController  {
 
@@ -25,7 +23,7 @@ public class signUpController  {
     @RequestMapping("/signUp")
     public String signUp(Model model) {
         model.addAttribute("user", new User());
-        return "signUp";
+        return "/signUp";
     }
 
     @RequestMapping(value="/signUp", method= RequestMethod.POST)
@@ -36,16 +34,14 @@ public class signUpController  {
             System.out.println("ERROR");
             return "/signUp";
         }
-
+        if (userManagment.existingUser(user.getUsername())) {
+            System.out.println("User "+user.getUsername()+" already exists.");
+            return "/signUp";
+        }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-
-        try {
-            userManagment.saveUser(user.getUsername(),user.getPassword());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        userManagment.saveUser(user.getUsername(),user.getPassword());
+        userManagment.userMkdir(user.getUsername());
         return "redirect:/";
     }
 }
