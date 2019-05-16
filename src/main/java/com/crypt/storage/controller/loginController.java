@@ -28,14 +28,13 @@ public class loginController {
     private UserManagment userManagment = new UserManagment();
 
     @RequestMapping("/")
-    public String index(){
+    public String index(Model model){
+        model.addAttribute("user", new User());
         return "index";
     }
     @RequestMapping(value="/", method= RequestMethod.POST)
     public String processAddSubmit(@ModelAttribute("user") User user,
                                    BindingResult bindingResult, HttpSession session) {
-
-
         if(bindingResult.hasErrors()){
             return "/";
         }
@@ -43,11 +42,11 @@ public class loginController {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         try {
-            userManagment.checkUser(user.getUsername(),user.getPassword());
+            userManagment.checkUser(user.getUsername(), user.getPassword());
         } catch (IOException e) {
             e.printStackTrace();
         }
         session.setAttribute("user", user);
-        return "/filesList";
+        return "/success";
     }
 }

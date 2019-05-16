@@ -46,7 +46,6 @@ public class signUpController  {
             e.printStackTrace();
         }
 
-
         return "redirect:/";
     }
 }
