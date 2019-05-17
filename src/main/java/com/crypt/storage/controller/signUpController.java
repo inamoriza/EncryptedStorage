@@ -19,8 +19,8 @@ public class signUpController  {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    private UserManagment userManagment = new UserManagment();
 
+    private UserManagment userManagment = new UserManagment();
 
     @RequestMapping("/signUp")
     public String signUp(Model model) {
@@ -33,17 +33,16 @@ public class signUpController  {
                                    BindingResult bindingResult, Errors errors) {
         if (bindingResult.hasErrors()){
             bindingResult.getAllErrors();
-            System.out.println("BINDING ERROR");
+            System.out.println("Binding Error");
             return "/signUp";
         }
-        if (userManagment.existingUser(user.getUsername())) {
-            System.out.println("User "+user.getUsername()+" already exists.");
-            return "/signUp";
-        }
+
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        userManagment.saveUser(user.getUsername(),user.getPassword());
-        userManagment.userMkdir(user.getUsername());
+        if (!(userManagment.createUserDir(user.getUsername()) &&
+                userManagment.createUser(user.getUsername(), user.getPassword(), user.getEmail()))) {
+            return "redirect:/error";
+        }
         return "redirect:/";
     }
 }

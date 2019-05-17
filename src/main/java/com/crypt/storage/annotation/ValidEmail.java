@@ -1,4 +1,6 @@
-package com.crypt.storage.validator;
+package com.crypt.storage.annotation;
+
+import com.crypt.storage.validator.EmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

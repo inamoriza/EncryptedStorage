@@ -2,9 +2,9 @@ package com.crypt.storage.DAO;
 
 import java.io.*;
 
+//Class for user CRUD operations.
 public class UserManagment {
-
-    private final String listURL = "C:/esdb/userList.txt";
+    public static final String listURL = "C:/esdb/userList.txt";
     private final String userDatabase = "C:/esdb/users/";
     private BufferedWriter writer;
     private BufferedReader read;
@@ -13,28 +13,39 @@ public class UserManagment {
         try {
             File list = new File(listURL);
             File root = new File(userDatabase);
-            if (!list.exists()) {
-                list.createNewFile();
-            }
-            if (!root.exists()) {
-                root.mkdir();
-            }
+            if (!list.exists()) { list.createNewFile(); }
+            if (!root.exists()) { root.mkdir(); }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public void saveUser(String username, String hash) {
+    public boolean createUser(String username, String hash, String email) {
         try {
-            String user = username + ":" + hash;
+            String user = username + ":" + hash + ":" + email;
             writer = new BufferedWriter(new FileWriter(listURL, true));
-            writer.write(user);
-            writer.newLine();
-            writer.close();
+            writer.write(user); writer.newLine(); writer.close();
             System.out.println("Created " + username + " user account.");
+            return true;
         } catch (IOException ex) {
             System.out.println("Error creating " + username + " user account.");
         }
+        return false;
+    }
+
+    public boolean createUserDir(String username) {
+        File dir = new File(userDatabase + username);
+        try {
+            if (!dir.exists()) {
+                System.out.println("Creating " + username + " personal directory...");
+                return dir.mkdir();
+            } else {
+                System.out.println(username + " personal directory already exists.");
+            }
+        } catch (SecurityException se) {
+            System.out.println("Error creating " + username + " personal directory.");
+        }
+        return false;
     }
 
     public boolean checkPassword(String username, String hash) {
@@ -54,42 +65,5 @@ public class UserManagment {
             System.out.println("Error checking password.");
         }
         return false;
-    }
-
-    public boolean existingUser(String username) {
-        try {
-            read = new BufferedReader(new FileReader(listURL));
-            String next = read.readLine();
-            while (next != null) {
-                if (next.split(":")[0].equals(username)) {
-                    read.close();
-                    return true;
-                }
-                next = read.readLine();
-            }
-            read.close();
-        } catch (IOException ex) {
-            System.out.println("Error checking user.");
-        }
-        return false;
-    }
-
-    public boolean userMkdir(String username) {
-        File dir = new File(userDatabase + username);
-        boolean result = false;
-
-        try {
-            if (!dir.exists()) {
-                System.out.println("Creating " + username + " personal directory...");
-                dir.mkdir();
-                System.out.println("Created " + username + " personal directory.");
-                result = true;
-            } else {
-                System.out.println(username + " personal directory already exists.");
-            }
-        } catch (SecurityException se) {
-            System.out.println("Error creating " + username + " personal directory.");
-        }
-        return result;
     }
 }

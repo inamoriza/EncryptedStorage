@@ -1,29 +1,26 @@
 package com.crypt.storage.model;
 
 
-import com.crypt.storage.validator.ValidEmail;
-import com.crypt.storage.validator.ValidPassword;
+import com.crypt.storage.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@ValidPassword
+@MatchingPassword
 public class User {
     @NotNull
-    @NotEmpty
+    @UniqueUser
     private String username;
 
     @NotNull
-    @NotEmpty
+    @ComplexPassword
     private String password;
 
     @NotNull
-    @NotEmpty
     private String matchingPassword;
 
     @NotNull
-    @NotEmpty
     @ValidEmail
+    @UniqueEmail
     private String email;
 
     public User(){

@@ -39,9 +39,9 @@ public class loginController {
         user.setPassword(hashedPassword);
         if (!userManagment.checkPassword(user.getUsername(), user.getPassword())) {
             System.out.println("Login for user "+user.getUsername()+" failed.");
-            return "/error";
+            return "redirect:/error";
         }
         session.setAttribute("user", user);
-        return "/files/list";
+        return "redirect:/files/list";
     }
 }
