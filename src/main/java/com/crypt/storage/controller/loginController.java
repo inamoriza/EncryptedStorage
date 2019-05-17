@@ -35,11 +35,12 @@ public class loginController {
         if(bindingResult.hasErrors()){
             return "/";
         }
-
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-        userManagment.checkPassword(user.getUsername(), user.getPassword());
-
+        if (!userManagment.checkPassword(user.getUsername(), user.getPassword())) {
+            System.out.println("Login for user "+user.getUsername()+" failed.");
+            return "/error";
+        }
         session.setAttribute("user", user);
         return "/files/list";
     }

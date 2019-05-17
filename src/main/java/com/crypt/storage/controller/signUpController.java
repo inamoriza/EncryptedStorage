@@ -16,7 +16,6 @@ public class signUpController  {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private UserManagment userManagment = new UserManagment();
 
 
