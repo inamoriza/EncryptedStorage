@@ -1,9 +1,13 @@
 package com.crypt.storage.model;
 
 
+import com.crypt.storage.validator.ValidEmail;
+import com.crypt.storage.validator.ValidPassword;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+@ValidPassword
 public class User {
     @NotNull
     @NotEmpty
@@ -19,6 +23,7 @@ public class User {
 
     @NotNull
     @NotEmpty
+    @ValidEmail
     private String email;
 
     public User(){
