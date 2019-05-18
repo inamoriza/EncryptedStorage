@@ -22,6 +22,7 @@ public class loginController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     private UserManagment userManagment = new UserManagment();
 
     @RequestMapping("/")
@@ -36,8 +37,7 @@ public class loginController {
             return "/";
         }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
-        if (!userManagment.checkPassword(user.getUsername(), user.getPassword())) {
+        if (!passwordEncoder.matches(userManagment.getPassword(user.getUsername()), user.getPassword())) {
             System.out.println("Login for user "+user.getUsername()+" failed.");
             return "redirect:/error";
         }

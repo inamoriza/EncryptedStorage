@@ -48,15 +48,14 @@ public class UserManagment {
         return false;
     }
 
-    public boolean checkPassword(String username, String hash) {
-        String user = username + ":" + hash;
+    public String getPassword(String username) {
+        String pass="";
         try {
             read = new BufferedReader(new FileReader(listURL));
             String next = read.readLine();
             while (next != null) {
-                if (next.equals(user)) {
-                    read.close();
-                    return true;
+                if (next.split(":")[0].equals(username)) {
+                    pass = next.split(":")[1];
                 }
                 next = read.readLine();
             }
@@ -64,6 +63,6 @@ public class UserManagment {
         } catch (IOException ex) {
             System.out.println("Error checking password.");
         }
-        return false;
+        return pass;
     }
 }
