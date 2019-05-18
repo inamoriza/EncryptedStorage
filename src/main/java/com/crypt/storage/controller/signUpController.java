@@ -32,7 +32,6 @@ public class signUpController  {
     public String processAddSubmit(@ModelAttribute("user") @Valid User user,
                                    BindingResult bindingResult, Errors errors) {
         if (bindingResult.hasErrors()){
-            bindingResult.getAllErrors();
             System.out.println("Binding Error");
             return "/signUp";
         }

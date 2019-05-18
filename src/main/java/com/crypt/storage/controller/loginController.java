@@ -30,6 +30,7 @@ public class loginController {
         model.addAttribute("user", new User());
         return "/index";
     }
+
     @RequestMapping(value="/", method= RequestMethod.POST)
     public String processAddSubmit(@ModelAttribute("user") User user,
                                    BindingResult bindingResult, HttpSession session) {

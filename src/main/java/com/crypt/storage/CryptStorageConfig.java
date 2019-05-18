@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.SecureRandom;
+
 @Configuration
 @EnableWebSecurity
 public class CryptStorageConfig extends WebSecurityConfigurerAdapter {
@@ -21,7 +23,8 @@ public class CryptStorageConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        SecureRandom random = new SecureRandom();
+        PasswordEncoder encoder = new BCryptPasswordEncoder(16, random);
         return encoder;
     }
 
