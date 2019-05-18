@@ -36,8 +36,8 @@ public class loginController {
         if(bindingResult.hasErrors()){
             return "/";
         }
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        if (!passwordEncoder.matches(userManagment.getPassword(user.getUsername()), user.getPassword())) {
+
+        if (!passwordEncoder.matches(user.getPassword(), userManagment.getPassword(user.getUsername()))) {
             System.out.println("Login for user "+user.getUsername()+" failed.");
             return "redirect:/error";
         }
