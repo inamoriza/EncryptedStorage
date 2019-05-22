@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Controller
 @RequestMapping("/files")
@@ -22,15 +25,27 @@ public class listController {
         return "/files/list";
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public String submit(@RequestParam("file") MultipartFile file, Model modelMap, HttpSession session) throws IOException {
+    @RequestMapping(value="/list", method = RequestMethod.POST)
+    public String addFile(@RequestParam("file") MultipartFile file, Model modelMap, HttpSession session) throws IOException {
 
+        //TODO Cifrar AES
+        //Guardar fichero en la carpeta del usuario
         User usuario = (User) session.getAttribute("user");
         String name = usuario.getUsername();
+        System.out.println("USERNAME: "+name);
         byte[] bytes = file.getBytes();
+        System.out.println("BYTES: "+ bytes.length);
+        String pathname= "C:/esdb/users/"+name+"/"+file.getOriginalFilename();
+        System.out.println("PATHNAME: "+pathname);
+        Path path = Paths.get(pathname);
+        Files.write(path, bytes);
 
         return "/files/list";
     }
+
+    //TODO Remove
+
+
 
 
 }
