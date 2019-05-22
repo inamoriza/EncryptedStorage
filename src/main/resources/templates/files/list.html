@@ -2,8 +2,183 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content = "width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.0/css/mdb.min.css" rel="stylesheet">
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.0/js/mdb.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" th:href="@{/css/style.css}" />
     <title>File List</title>
 </head>
 <body>
+<!-- Editable table -->
+<div class="card">
+    <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Your Files</h3>
+    <div class="card-body">
+        <div id="table" class="table-editable">
+
+            <!-- Modal Upload -->
+      <span class="table-add float-right mb-3 mr-2">
+          <a href="#!" class="text-success"><i class="fas fa-plus fa-2x" aria-hidden="true"  data-toggle="modal" data-target="#popup"></i></a>
+      </span>
+            <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="title"
+                 aria-hidden="true">
+
+                <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+                <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="title">Upload new files</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="pb-2">Select file</h6>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                           aria-describedby="inputGroupFileAddon01">
+                                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-elegant" data-dismiss="modal">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered table-responsive-md table-striped text-center">
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Format</th>
+                    <th class="text-center">URL</th>
+                    <th class="text-center">Remove</th>
+                </tr>
+                <tr>
+                    <td class="pt-3-half" contenteditable="false">Aurelia Vega</td>
+                    <td class="pt-3-half" contenteditable="false">30</td>
+                    <td class="pt-3-half" contenteditable="false">Deepends</td>
+                    <td>
+                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                    </td>
+                </tr>
+                <!-- This is our clonable table line -->
+                <tr>
+                    <td class="pt-3-half" contenteditable="true">Guerra Cortez</td>
+                    <td class="pt-3-half" contenteditable="true">45</td>
+                    <td class="pt-3-half" contenteditable="true">Insectus</td>
+                    <td>
+                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                    </td>
+                </tr>
+                <!-- This is our clonable table line -->
+                <tr>
+                    <td class="pt-3-half" contenteditable="true">Guadalupe House</td>
+                    <td class="pt-3-half" contenteditable="true">26</td>
+                    <td class="pt-3-half" contenteditable="true">Isotronic</td>
+                    <td>
+                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                    </td>
+                </tr>
+                <!-- This is our clonable table line -->
+                <tr class="hide">
+                    <td class="pt-3-half" contenteditable="true">Elisa Gallagher</td>
+                    <td class="pt-3-half" contenteditable="true">31</td>
+                    <td class="pt-3-half" contenteditable="true">Portica</td>
+                    <td>
+                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                    </td>
+                </tr>
+            </table>
+            <script>
+                var $TABLE = $('#table');
+                var $BTN = $('#export-btn');
+                var $EXPORT = $('#export');
+
+                $('.table-add').click(function () {
+                var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
+                $TABLE.find('table').append($clone);
+                });
+
+                $('.table-remove').click(function () {
+                $(this).parents('tr').detach();
+                });
+
+                $('.table-up').click(function () {
+                var $row = $(this).parents('tr');
+                if ($row.index() === 1) return; // Don't go above the header
+                $row.prev().before($row.get(0));
+                });
+
+                $('.table-down').click(function () {
+                var $row = $(this).parents('tr');
+                $row.next().after($row.get(0));
+                });
+
+                // A few jQuery helpers for exporting only
+                jQuery.fn.pop = [].pop;
+                jQuery.fn.shift = [].shift;
+
+                $BTN.click(function () {
+                var $rows = $TABLE.find('tr:not(:hidden)');
+                var headers = [];
+                var data = [];
+
+                // Get the headers (add special header logic here)
+                $($rows.shift()).find('th:not(:empty)').each(function () {
+                headers.push($(this).text().toLowerCase());
+                });
+
+                // Turn all existing rows into a loopable array
+                $rows.each(function () {
+                var $td = $(this).find('td');
+                var h = {};
+
+                // Use the headers from earlier to name our hash keys
+                headers.forEach(function (header, i) {
+                h[header] = $td.eq(i).text();
+                });
+
+                data.push(h);
+                });
+
+                // Output the result
+                $EXPORT.text(JSON.stringify(data));
+                });
+
+                /* show file value after file select */
+            $('#inputGroupFile01').on('change',function(){
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+        </script>
+        </div>
+    </div>
+</div>
+<!-- Editable table -->
 </body>
 </html>

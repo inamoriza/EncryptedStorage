@@ -1,70 +1,61 @@
+var $TABLE = $('#table');
+var $BTN = $('#export-btn');
+var $EXPORT = $('#export');
 
-(function ($) {
-    "use strict";
+$('.table-add').click(function () {
+var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
+$TABLE.find('table').append($clone);
+});
 
+$('.table-remove').click(function () {
+$(this).parents('tr').detach();
+});
 
-    /*==================================================================
-    [ Focus input ]*/
-    $('.input100').each(function(){
-        $(this).on('blur', function(){
-            if($(this).val().trim() != "") {
-                $(this).addClass('has-val');
-            }
-            else {
-                $(this).removeClass('has-val');
-            }
-        })    
-    })
-  
-  
-    /*==================================================================
-    [ Validate ]*/
-    var input = $('.validate-input .input100');
+$('.table-up').click(function () {
+var $row = $(this).parents('tr');
+if ($row.index() === 1) return; // Don't go above the header
+$row.prev().before($row.get(0));
+});
 
-    $('.validate-form').on('submit',function(){
-        var check = true;
+$('.table-down').click(function () {
+var $row = $(this).parents('tr');
+$row.next().after($row.get(0));
+});
 
-        for(var i=0; i<input.length; i++) {
-            if(validate(input[i]) == false){
-                showValidate(input[i]);
-                check=false;
-            }
-        }
+// A few jQuery helpers for exporting only
+jQuery.fn.pop = [].pop;
+jQuery.fn.shift = [].shift;
 
-        return check;
-    });
+$BTN.click(function () {
+var $rows = $TABLE.find('tr:not(:hidden)');
+var headers = [];
+var data = [];
 
+// Get the headers (add special header logic here)
+$($rows.shift()).find('th:not(:empty)').each(function () {
+headers.push($(this).text().toLowerCase());
+});
 
-    $('.validate-form .input100').each(function(){
-        $(this).focus(function(){
-           hideValidate(this);
-        });
-    });
+// Turn all existing rows into a loopable array
+$rows.each(function () {
+var $td = $(this).find('td');
+var h = {};
 
-    function validate (input) {
-        if($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {
-            if($(input).val().trim().match(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/) == null) {
-                return false;
-            }
-        }
-        else {
-            if($(input).val().trim() == ''){
-                return false;
-            }
-        }
-    }
+// Use the headers from earlier to name our hash keys
+headers.forEach(function (header, i) {
+h[header] = $td.eq(i).text();
+});
 
-    function showValidate(input) {
-        var thisAlert = $(input).parent();
+data.push(h);
+});
 
-        $(thisAlert).addClass('alert-validate');
-    }
+// Output the result
+$EXPORT.text(JSON.stringify(data));
+});
 
-    function hideValidate(input) {
-        var thisAlert = $(input).parent();
-
-        $(thisAlert).removeClass('alert-validate');
-    }
-    
-    
-})(jQuery);
+/* show file value after file select */
+$('.custom-file-input').on('change',function(){
+  var fileName = document.getElementById("inputGroupFile01").files[0].name;
+  console.log("HOLA");
+  $(this).next('.form-control-file').addClass("selected").html(fileName);
+})
