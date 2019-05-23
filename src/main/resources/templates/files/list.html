@@ -34,7 +34,7 @@
         <div id="table" class="table-editable">
 
             <!-- Modal Upload -->
-            <span class="table-add float-right mb-3 mr-2">
+            <span class="float-right mb-3 mr-2">
                 <a href="#!" class="text-success"><i class="fas fa-plus fa-2x" aria-hidden="true" data-toggle="modal"
                                                      data-target="#popup"></i></a>
             </span>
@@ -119,11 +119,6 @@
                 var $TABLE = $('#table');
                 var $BTN = $('#export-btn');
                 var $EXPORT = $('#export');
-
-                $('.table-add').click(function () {
-                    var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
-                    $TABLE.find('table').append($clone);
-                });
 
                 $('.table-remove').click(function () {
                     $(this).parents('tr').detach();
