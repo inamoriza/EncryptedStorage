@@ -21,26 +21,32 @@ import java.nio.file.Paths;
 public class listController {
 
     @RequestMapping("/list")
-    public String list(Model model) {
+    public String list(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/";
+        }
         return "/files/list";
     }
 
     @RequestMapping(value="/list", method = RequestMethod.POST)
-    public String addFile(@RequestParam("file") MultipartFile file, Model modelMap, HttpSession session) throws IOException {
-
-        //TODO Cifrar AES
-        //Guardar fichero en la carpeta del usuario
-        User usuario = (User) session.getAttribute("user");
-        String name = usuario.getUsername();
-        System.out.println("USERNAME: "+name);
-        byte[] bytes = file.getBytes();
-        System.out.println("BYTES: "+ bytes.length);
-        String pathname= "C:/esdb/users/"+name+"/"+file.getOriginalFilename();
-        System.out.println("PATHNAME: "+pathname);
-        Path path = Paths.get(pathname);
-        Files.write(path, bytes);
-
-        return "/files/list";
+    public String addFile(@RequestParam("file") MultipartFile file, Model model, HttpSession session) {
+        try {
+            //TODO Cifrar AES
+            //Guardar fichero en la carpeta del usuario
+            User usuario = (User) session.getAttribute("user");
+            String name = usuario.getUsername();
+            System.out.println("USERNAME: "+name);
+            byte[] bytes = file.getBytes();
+            System.out.println("BYTES: "+ bytes.length);
+            String pathname= "C:/esdb/users/"+name+"/"+file.getOriginalFilename();
+            System.out.println("PATHNAME: "+pathname);
+            Path path = Paths.get(pathname);
+            Files.write(path, bytes);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return "redirect:/files/list";
     }
 
     //TODO Remove

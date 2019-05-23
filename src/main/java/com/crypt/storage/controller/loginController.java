@@ -42,6 +42,7 @@ public class loginController {
             System.out.println("Login for user "+user.getUsername()+" failed.");
             return "redirect:/error";
         }
+        System.out.println("Login for user "+user.getUsername()+" was successful.");
         session.setAttribute("user", user);
         return "redirect:/files/list";
     }
