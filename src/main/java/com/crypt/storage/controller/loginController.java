@@ -35,7 +35,7 @@ public class loginController {
     public String processAddSubmit(@ModelAttribute("user") User user,
                                    BindingResult bindingResult, HttpSession session) {
         if(bindingResult.hasErrors()){
-            return "/";
+            return "redirect:/error";
         }
 
         if (!passwordEncoder.matches(user.getPassword(), userManagment.getPassword(user.getUsername()))) {
