@@ -24,7 +24,7 @@ public class CryptStorageConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         SecureRandom random = new SecureRandom();
-        PasswordEncoder encoder = new BCryptPasswordEncoder(16, random);
+        PasswordEncoder encoder = new BCryptPasswordEncoder(14, random);
         return encoder;
     }
 
