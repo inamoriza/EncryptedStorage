@@ -1,9 +1,6 @@
 package com.crypt.storage.DAO;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -31,7 +28,7 @@ public class FileManagment {
         srandom.nextBytes(iv);
         IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-        Cipher ci;
+        Cipher ci=null;
 
         try {
             ci = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -40,8 +37,14 @@ public class FileManagment {
             System.out.println("Bad encrypt");
             e.printStackTrace();
         }
-        
-        //final byte[] resultBytes = ci.doFinal();
+
+        byte[] bytes = new byte[(int) file.length()];
+
+        try {
+            final byte[] resultBytes = ci.doFinal(bytes);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
 
         //return Base64.getMimeEncoder().encodeToString(resultBytes);
 
