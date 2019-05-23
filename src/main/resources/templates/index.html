@@ -39,6 +39,8 @@
     <!-- Password -->
     <input type="password" id="password" class="form-control mb-4" th:field="*{password}" placeholder="Password">
 
+    <p th:if="${loginFailed}" class="text-danger">Login Failed</p>
+
     <div class="d-flex justify-content-around">
         <div>
             <!-- Remember me -->
