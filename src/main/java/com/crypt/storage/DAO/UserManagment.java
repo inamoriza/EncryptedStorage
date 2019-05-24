@@ -1,5 +1,7 @@
 package com.crypt.storage.DAO;
 
+import com.crypt.storage.model.User;
+
 import java.io.*;
 
 //Class for user CRUD operations.
@@ -64,5 +66,10 @@ public class UserManagment {
             System.out.println("Error checking password.");
         }
         return pass;
+    }
+
+    public User invalidatePassword(User user) {
+        user.setPassword("");
+        return user;
     }
 }

@@ -1,5 +1,6 @@
 package com.crypt.storage.controller;
 
+import com.crypt.storage.DAO.FileManagment;
 import com.crypt.storage.DAO.UserManagment;
 import com.crypt.storage.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class loginController {
     private PasswordEncoder passwordEncoder;
 
     private UserManagment userManagment = new UserManagment();
+    private FileManagment fileManagment = new FileManagment();
 
     @RequestMapping("/")
     public String index(Model model){
@@ -32,16 +34,20 @@ public class loginController {
     public String processAddSubmit(@ModelAttribute("user") User user, Model model,
                                    BindingResult bindingResult, HttpSession session) {
         if(bindingResult.hasErrors()){
+            user = null;
             return "redirect:/error";
         }
 
         if (!passwordEncoder.matches(user.getPassword(), userManagment.getPassword(user.getUsername()))) {
             System.out.println("Login for user "+user.getUsername()+" failed.");
             model.addAttribute("loginFailed", true);
+            user = null;
             return "/index";
         }
         System.out.println("Login for user "+user.getUsername()+" was successful.");
-        session.setAttribute("user", user);
+        session.setAttribute("secret", fileManagment.getSecretKey(user.getPassword()));
+        session.setAttribute("user", userManagment.invalidatePassword(user));
+        user=null;
         return "redirect:/files/list";
     }
 

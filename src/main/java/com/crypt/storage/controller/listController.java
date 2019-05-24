@@ -32,24 +32,21 @@ public class listController {
     @RequestMapping(value="/list", method = RequestMethod.POST)
     public String addFile(@RequestParam("file") MultipartFile file, Model model, HttpSession session) {
         try {
-            //TODO Cifrar AES
-            //Guardar fichero en la carpeta del usuario
-            User usuario = (User) session.getAttribute("user");
-            String name = usuario.getUsername();
-            System.out.println("USERNAME: "+name);
+            User user = (User) session.getAttribute("user");
+            String name = user.getUsername();
+            System.out.println("Cifrando archivo del usuario "+user.getUsername());
             byte[] bytes = file.getBytes();
             System.out.println("BYTES: "+ bytes.length);
             String pathname= "C:/esdb/users/"+name+"/"+file.getOriginalFilename();
             System.out.println("PATHNAME: "+pathname);
             Path path = Paths.get(pathname);
             Files.write(path, bytes);
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         return "redirect:/files/list";
     }
-
-    //TODO Remove
 
 
 
