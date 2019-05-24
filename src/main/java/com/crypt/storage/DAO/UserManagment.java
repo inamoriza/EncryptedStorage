@@ -3,6 +3,13 @@ package com.crypt.storage.DAO;
 import com.crypt.storage.model.User;
 
 import java.io.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Date;
 
 //Class for user CRUD operations.
 public class UserManagment {
@@ -66,6 +73,30 @@ public class UserManagment {
             System.out.println("Error checking password.");
         }
         return pass;
+    }
+
+    public ArrayList<String[]> listUserDir(String username) {
+        ArrayList<String[]> list = new ArrayList<>();
+        File folder = new File(UserManagment.userDatabase + username);
+        File[] dir = folder.listFiles();
+        String[] aux;
+
+        try {
+            for (File file : dir) {
+                aux = new String[3];
+                aux[0] = file.getName();
+                aux[1] = (file.length() < 1000000 ) ? file.length()/1000 + " KB" : file.length()/1000000 + " MB";
+                aux[2] = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()),
+                        ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM,
+                        FormatStyle.SHORT));
+                list.add(aux);
+            }
+
+        } catch (NullPointerException ex) {
+            System.out.println("Error reading user directory.");
+            ex.printStackTrace();
+        }
+        return list;
     }
 
     public User invalidatePassword(User user) {

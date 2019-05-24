@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class listController {
 
     private FileManagment fileManagment = new FileManagment();
+    private UserManagment userManagment = new UserManagment();
 
     @RequestMapping("/list")
     public String list(Model model, HttpSession session) {
@@ -29,6 +30,7 @@ public class listController {
         if (user == null) {
             return "redirect:/";
         }
+        session.setAttribute("fileList", userManagment.listUserDir(user.getUsername()));
         return "/files/list";
     }
 

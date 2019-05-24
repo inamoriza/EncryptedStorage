@@ -74,45 +74,24 @@
             <table class="table table-bordered table-responsive-md table-striped text-center">
                 <tr>
                     <th class="text-center">Name</th>
-                    <th class="text-center">Format</th>
-                    <th class="text-center">URL</th>
+                    <th class="text-center">Size</th>
+                    <th class="text-center">Upload Date</th>
+                    <th class="text-center">Download</th>
                     <th class="text-center">Remove</th>
                 </tr>
-                <tr>
-                    <td class="pt-3-half" contenteditable="false">Aurelia Vega</td>
-                    <td class="pt-3-half" contenteditable="false">30</td>
-                    <td class="pt-3-half" contenteditable="false">Deepends</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
-                    </td>
-                </tr>
-                <!-- This is our clonable table line -->
-                <tr>
-                    <td class="pt-3-half" contenteditable="true">Guerra Cortez</td>
-                    <td class="pt-3-half" contenteditable="true">45</td>
-                    <td class="pt-3-half" contenteditable="true">Insectus</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
-                    </td>
-                </tr>
-                <!-- This is our clonable table line -->
-                <tr>
-                    <td class="pt-3-half" contenteditable="true">Guadalupe House</td>
-                    <td class="pt-3-half" contenteditable="true">26</td>
-                    <td class="pt-3-half" contenteditable="true">Isotronic</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
-                    </td>
-                </tr>
-                <!-- This is our clonable table line -->
-                <tr class="hide">
-                    <td class="pt-3-half" contenteditable="true">Elisa Gallagher</td>
-                    <td class="pt-3-half" contenteditable="true">31</td>
-                    <td class="pt-3-half" contenteditable="true">Portica</td>
-                    <td>
-                        <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
-                    </td>
-                </tr>
+                <th:block th:each="file : ${session.fileList}">
+                    <tr>
+                        <td class="pt-3-half" contenteditable="false" th:text="${file[0]}"></td>
+                        <td class="pt-3-half" contenteditable="false" th:text="${file[1]}"></td>
+                        <td class="pt-3-half" contenteditable="false" th:text="${file[2]}"></td>
+                        <td>
+                            <span><button type="button" class="btn btn-success btn-rounded btn-sm my-0">Download</button></span>
+                        </td>
+                        <td>
+                            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                        </td>
+                    </tr>
+                </th:block>
             </table>
             <a href="/logout" type="button" class="btn btn-elegant float-right mb-3 mr-2">Log Out</a>
 
