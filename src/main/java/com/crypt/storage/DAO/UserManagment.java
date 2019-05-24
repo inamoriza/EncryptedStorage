@@ -7,7 +7,7 @@ import java.io.*;
 //Class for user CRUD operations.
 public class UserManagment {
     public static final String listURL = "C:/esdb/userList.txt";
-    private final String userDatabase = "C:/esdb/users/";
+    public static final String userDatabase = "C:/esdb/users/";
     private BufferedWriter writer;
     private BufferedReader read;
 

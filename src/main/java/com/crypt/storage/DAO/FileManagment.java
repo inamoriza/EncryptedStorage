@@ -39,14 +39,14 @@ public class FileManagment {
         return null;
     }
 
-    public ArrayList<byte[]> encryptFile(SecretKeySpec secret, File file) {
+    public ArrayList<byte[]> encryptFile(SecretKeySpec secret, byte[] file) {
         ArrayList<byte[]> res = new ArrayList<>();
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE);
             cipher.init(Cipher.ENCRYPT_MODE, secret);
             AlgorithmParameters params = cipher.getParameters();
             byte[] initVector = params.getParameterSpec(IvParameterSpec.class).getIV();
-            byte[] cipherText = cipher.doFinal(Files.readAllBytes(file.toPath()));
+            byte[] cipherText = cipher.doFinal(file);
             res.add(initVector);
             res.add(cipherText);
             return res;
@@ -68,9 +68,6 @@ public class FileManagment {
             ex.printStackTrace();
         } catch (BadPaddingException ex) {
             System.out.println("Specified padding is not valid.");
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            System.out.println("Error reading file.");
             ex.printStackTrace();
         }
         return res;

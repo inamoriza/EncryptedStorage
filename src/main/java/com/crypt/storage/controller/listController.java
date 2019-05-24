@@ -1,24 +1,27 @@
 package com.crypt.storage.controller;
 
+import com.crypt.storage.DAO.FileManagment;
+import com.crypt.storage.DAO.UserManagment;
 import com.crypt.storage.model.User;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpSession;
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/files")
 public class listController {
+
+    private FileManagment fileManagment = new FileManagment();
 
     @RequestMapping("/list")
     public String list(Model model, HttpSession session) {
@@ -33,14 +36,11 @@ public class listController {
     public String addFile(@RequestParam("file") MultipartFile file, Model model, HttpSession session) {
         try {
             User user = (User) session.getAttribute("user");
-            String name = user.getUsername();
-            System.out.println("Cifrando archivo del usuario "+user.getUsername());
-            byte[] bytes = file.getBytes();
-            System.out.println("BYTES: "+ bytes.length);
-            String pathname= "C:/esdb/users/"+name+"/"+file.getOriginalFilename();
-            System.out.println("PATHNAME: "+pathname);
-            Path path = Paths.get(pathname);
-            Files.write(path, bytes);
+            ArrayList<byte[]> cf = fileManagment.encryptFile((SecretKeySpec) session.getAttribute("secret"),
+                    file.getBytes());
+            FileOutputStream fs = new FileOutputStream(UserManagment.userDatabase
+                    + user.getUsername() + "/" + FilenameUtils.removeExtension(file.getOriginalFilename()));
+            fs.write(cf.get(1));
 
         } catch (IOException ex) {
             ex.printStackTrace();
