@@ -17,24 +17,72 @@ public class FileManagment {
     private static final String SK_FACTORY_INSTANCE = "PBKDF2WithHmacSHA256";
     private static final String CIPHER_INSTANCE = "AES/CBC/PKCS5Padding";
     private static final String ALGORITHM = "AES";
+    private static final String KS_PASS = "Jd_&Aw*,`hZ8BG]Q";
     private static final int ITERATIONS = 65536;
     private static final int SIZE = 256;
+    private static final String PREFIX = "esdb-key-user:";
 
-    public SecretKeySpec getSecretKey(String password) {
+
+    public void generateSecretKey(String password,String username) {
         byte[] salt = new byte[8];
         SecureRandom sRandom = new SecureRandom();
         sRandom.nextBytes(salt);
+        String alias = PREFIX+username;
+        char [] pass = password.toCharArray();
+        char [] ks_password = KS_PASS.toCharArray();
+
         try {
+            //Create secret key
             SecretKeyFactory factory = SecretKeyFactory.getInstance(SK_FACTORY_INSTANCE);
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, SIZE);
             SecretKey k = factory.generateSecret(spec);
-            return new SecretKeySpec(k.getEncoded(), ALGORITHM);
+            SecretKey key = new SecretKeySpec(k.getEncoded(), ALGORITHM);
+
+            //Save secret key
+            KeyStore ks = loadKeyStore(ks_password);
+            KeyStore.SecretKeyEntry entry = new KeyStore.SecretKeyEntry(key);
+            ks.setEntry(alias, entry, new KeyStore.PasswordProtection(pass));
+
+
         } catch (NoSuchAlgorithmException ex) {
             System.out.println("Factory specified algorithm is not valid.");
             ex.printStackTrace();
         } catch (InvalidKeySpecException ex) {
             System.out.println("Secret Key specification is not valid.");
             ex.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private KeyStore loadKeyStore(char[] password) throws GeneralSecurityException {
+
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        InputStream in = null;
+
+        try {
+            in = new FileInputStream("keystore");
+            keyStore.load(in, password);
+            return keyStore;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public SecretKey getSecretKey(String username, String password){
+        String alias = PREFIX+username;
+        char [] pass = password.toCharArray();
+        char [] ks_password = KS_PASS.toCharArray();
+
+        KeyStore ks = null;
+        try {
+            ks = loadKeyStore(ks_password);
+            KeyStore.ProtectionParameter entryPassword =
+                    new KeyStore.PasswordProtection(pass);
+            KeyStore.SecretKeyEntry key = (KeyStore.SecretKeyEntry) ks.getEntry("keyAlias", entryPassword);
+            return key.getSecretKey();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
         }
         return null;
     }
