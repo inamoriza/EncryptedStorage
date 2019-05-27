@@ -7,6 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
@@ -39,10 +40,12 @@ public class FileManagment {
             SecretKey key = new SecretKeySpec(k.getEncoded(), ALGORITHM);
 
             //Save secret key
-            KeyStore ks = loadKeyStore(ks_password);
+            KeyStore ks = loadKeyStore();
             KeyStore.SecretKeyEntry entry = new KeyStore.SecretKeyEntry(key);
             ks.setEntry(alias, entry, new KeyStore.PasswordProtection(pass));
 
+            //Save KeyStore
+            saveKeyStore(ks);
 
         } catch (NoSuchAlgorithmException ex) {
             System.out.println("Factory specified algorithm is not valid.");
@@ -55,31 +58,45 @@ public class FileManagment {
         }
     }
 
-    private KeyStore loadKeyStore(char[] password) throws GeneralSecurityException {
+    private KeyStore loadKeyStore() throws GeneralSecurityException {
 
-        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        char [] password = KS_PASS.toCharArray();
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
         InputStream in = null;
 
         try {
-            in = new FileInputStream("keystore");
+            in = new FileInputStream("src/main/resources/database/keystore.ks");
+
+            System.out.println("KeyStore ANTES: "+keyStore);
             keyStore.load(in, password);
+
             return keyStore;
         } catch (IOException e) {
             throw new AssertionError(e);
         }
     }
 
+    private void saveKeyStore(KeyStore ks){
+        char [] password = KS_PASS.toCharArray();
+        try(FileOutputStream keyStoreOutput = new FileOutputStream("src/main/resources/database/keystore.ks")){
+            ks.store(keyStoreOutput, password);
+        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public SecretKey getSecretKey(String username, String password){
         String alias = PREFIX+username;
         char [] pass = password.toCharArray();
-        char [] ks_password = KS_PASS.toCharArray();
 
         KeyStore ks = null;
         try {
-            ks = loadKeyStore(ks_password);
+            ks = (KeyStore) loadKeyStore();
+            System.out.println("KeyStore: "+ks);
             KeyStore.ProtectionParameter entryPassword =
                     new KeyStore.PasswordProtection(pass);
-            KeyStore.SecretKeyEntry key = (KeyStore.SecretKeyEntry) ks.getEntry("keyAlias", entryPassword);
+            KeyStore.SecretKeyEntry key = (KeyStore.SecretKeyEntry) ks.getEntry(alias, entryPassword);
             return key.getSecretKey();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();

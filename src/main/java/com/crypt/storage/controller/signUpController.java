@@ -1,5 +1,6 @@
 package com.crypt.storage.controller;
 
+import com.crypt.storage.DAO.FileManagment;
 import com.crypt.storage.DAO.UserManagment;
 import com.crypt.storage.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.crypto.SecretKey;
 import javax.validation.Valid;
 
 @Controller
@@ -21,6 +23,7 @@ public class signUpController  {
     private PasswordEncoder passwordEncoder;
 
     private UserManagment userManagment = new UserManagment();
+    private FileManagment fileManagment = new FileManagment();
 
     @RequestMapping("/signUp")
     public String signUp(Model model) {
@@ -36,6 +39,7 @@ public class signUpController  {
             return "/signUp";
         }
 
+        fileManagment.generateSecretKey(user.getPassword(),user.getUsername());
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         if (!(userManagment.createUserDir(user.getUsername()) &&

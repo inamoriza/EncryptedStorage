@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -45,7 +46,8 @@ public class loginController {
             return "/index";
         }
         System.out.println("Login for user "+user.getUsername()+" was successful.");
-        session.setAttribute("secret", fileManagment.getSecretKey(user.getPassword()));
+        SecretKey secret = fileManagment.getSecretKey(user.getUsername(),user.getPassword());
+        session.setAttribute("secret", secret);
         session.setAttribute("user", userManagment.invalidatePassword(user));
         user=null;
         return "redirect:/files/list";
