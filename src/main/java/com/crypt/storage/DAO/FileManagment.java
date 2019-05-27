@@ -142,7 +142,7 @@ public class FileManagment {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE);
             cipher.init(Cipher.DECRYPT_MODE, secret, cipher.getParameters());
-
+            System.out.println("Decrypting...");
             byte [] decrypted = cipher.doFinal(cipherText);
             /*CipherInputStream cipherInput = new CipherInputStream(new ByteArrayInputStream(initVector), cipher);
             ByteArrayOutputStream cipherOutput = new ByteArrayOutputStream();

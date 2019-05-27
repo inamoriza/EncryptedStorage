@@ -45,8 +45,9 @@ public class listController {
             FileOutputStream fs = new FileOutputStream(UserManagment.userDatabase
                     + user.getUsername() + "/" + FilenameUtils.removeExtension(file.getOriginalFilename()));
             fs.write(cf.get(1));
-
-            SecretKey key = fileManagment.getSecretKey(user.getUsername(),user.getPassword());
+            System.out.println("USER: "+user.getUsername());
+            System.out.println("PASS: "+user.getPassword());
+            SecretKey key = fileManagment.getSecretKey(user.getUsername(),"CuloPlano0");
             System.out.println("key: "+ key);
             SecretKeySpec spec = new SecretKeySpec(key.getEncoded(), "AES");
             byte [] decryptedFile = fileManagment.decryptFile(spec,cf.get(1));
