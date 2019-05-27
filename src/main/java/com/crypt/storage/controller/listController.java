@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +45,15 @@ public class listController {
             FileOutputStream fs = new FileOutputStream(UserManagment.userDatabase
                     + user.getUsername() + "/" + FilenameUtils.removeExtension(file.getOriginalFilename()));
             fs.write(cf.get(1));
+
+            SecretKey key = fileManagment.getSecretKey(user.getUsername(),user.getPassword());
+            System.out.println("key: "+ key);
+            SecretKeySpec spec = new SecretKeySpec(key.getEncoded(), "AES");
+            byte [] decryptedFile = fileManagment.decryptFile(spec,cf.get(1));
+
+            FileOutputStream newfile = new FileOutputStream(UserManagment.userDatabase
+                    + user.getUsername() + "/" +"desencriptado-"+ file.getOriginalFilename());
+            newfile.write(decryptedFile);
 
         } catch (IOException ex) {
             ex.printStackTrace();

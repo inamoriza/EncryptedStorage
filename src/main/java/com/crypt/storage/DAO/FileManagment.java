@@ -138,12 +138,13 @@ public class FileManagment {
         return res;
     }
 
-    public byte[] decryptFile(SecretKeySpec secret, byte[] initVector, byte[] cipherText) {
+    public byte[] decryptFile(SecretKeySpec secret, byte[] cipherText) {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE);
-            cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(initVector));
+            cipher.init(Cipher.DECRYPT_MODE, secret, cipher.getParameters());
 
-            CipherInputStream cipherInput = new CipherInputStream(new ByteArrayInputStream(initVector), cipher);
+            byte [] decrypted = cipher.doFinal(cipherText);
+            /*CipherInputStream cipherInput = new CipherInputStream(new ByteArrayInputStream(initVector), cipher);
             ByteArrayOutputStream cipherOutput = new ByteArrayOutputStream();
 
             int len;
@@ -151,12 +152,9 @@ public class FileManagment {
             while ((len = cipherInput.read(buffer, 0, buffer.length)) != -1) {
                 cipherOutput.write(buffer, 0, len);
             }
-            cipherOutput.flush();
-            return cipherOutput.toByteArray();
+            cipherOutput.flush(); */
+            return decrypted;
 
-        } catch (IOException ex) {
-            System.out.println("IO error.");
-            ex.printStackTrace();
         } catch (NoSuchPaddingException ex) {
             System.out.println("Specified cipher instance padding is not valid.");
             ex.printStackTrace();
@@ -166,9 +164,12 @@ public class FileManagment {
         } catch (InvalidKeyException ex) {
             System.out.println("Specified key is not valid.");
             ex.printStackTrace();
-        } catch (InvalidAlgorithmParameterException ex) {
-            System.out.println("Specified algorithm parameter is not valid.");
-            ex.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
         }
         return null;
     }
