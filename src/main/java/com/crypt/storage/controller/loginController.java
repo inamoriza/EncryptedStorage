@@ -45,10 +45,8 @@ public class loginController {
         }
         System.out.println("Login for user "+user.getUsername()+" was successful.");
         SecretKey secret = fileManagment.getSecretKey(user.getUsername(),user.getPassword());
-        System.out.println("Key login: "+ secret);
         session.setAttribute("secret", secret);
         session.setAttribute("user", userManagment.invalidatePassword(user));
-        userManagment.invalidateUser(user);
         return "redirect:/files/list";
     }
 

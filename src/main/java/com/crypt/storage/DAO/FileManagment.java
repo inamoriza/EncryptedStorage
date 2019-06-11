@@ -78,7 +78,6 @@ public class FileManagment {
         char [] pass = password.toCharArray();
         try {
             KeyStore ks = loadKeyStore();
-            System.out.println("KeyStore: "+ks);
             KeyStore.ProtectionParameter entryPassword = new KeyStore.PasswordProtection(pass);
             KeyStore.SecretKeyEntry key = (KeyStore.SecretKeyEntry) ks.getEntry(alias, entryPassword);
             return key.getSecretKey();
@@ -94,7 +93,6 @@ public class FileManagment {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE);
             cipher.init(Cipher.ENCRYPT_MODE, secret);
-            System.out.println(cipher.getParameters());
             byte[] initVector = cipher.getIV();
             byte[] cipherText = cipher.doFinal(file);
             res = new byte[initVector.length + cipherText.length];
@@ -128,8 +126,6 @@ public class FileManagment {
             System.arraycopy(cipherText, 0, iv, 0, iv.length);
             System.arraycopy(cipherText, iv.length, file, 0, file.length);
             cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
-            System.out.println(cipher.getParameters());
-            System.out.println("Decrypting...");
             return cipher.doFinal(file);
 
         } catch (NoSuchPaddingException ex) {
