@@ -45,16 +45,18 @@ public class listController {
             FileOutputStream fs = new FileOutputStream(UserManagment.userDatabase
                     + user.getUsername() + "/" + FilenameUtils.removeExtension(file.getOriginalFilename()));
             fs.write(cf.get(1));
+            fs.close();
             System.out.println("USER: "+user.getUsername());
             System.out.println("PASS: "+user.getPassword());
-            SecretKey key = fileManagment.getSecretKey(user.getUsername(),"CuloPlano0");
+            SecretKey key = (SecretKey) session.getAttribute("secret");
             System.out.println("key: "+ key);
             SecretKeySpec spec = new SecretKeySpec(key.getEncoded(), "AES");
             byte [] decryptedFile = fileManagment.decryptFile(spec,cf.get(1));
 
-            FileOutputStream newfile = new FileOutputStream(UserManagment.userDatabase
+            fs = new FileOutputStream(UserManagment.userDatabase
                     + user.getUsername() + "/" +"desencriptado-"+ file.getOriginalFilename());
-            newfile.write(decryptedFile);
+            fs.write(decryptedFile);
+            fs.close();
 
         } catch (IOException ex) {
             ex.printStackTrace();

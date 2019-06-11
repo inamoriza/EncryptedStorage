@@ -144,15 +144,6 @@ public class FileManagment {
             cipher.init(Cipher.DECRYPT_MODE, secret, cipher.getParameters());
             System.out.println("Decrypting...");
             byte [] decrypted = cipher.doFinal(cipherText);
-            /*CipherInputStream cipherInput = new CipherInputStream(new ByteArrayInputStream(initVector), cipher);
-            ByteArrayOutputStream cipherOutput = new ByteArrayOutputStream();
-
-            int len;
-            byte[] buffer = new byte[4096];
-            while ((len = cipherInput.read(buffer, 0, buffer.length)) != -1) {
-                cipherOutput.write(buffer, 0, len);
-            }
-            cipherOutput.flush(); */
             return decrypted;
 
         } catch (NoSuchPaddingException ex) {
