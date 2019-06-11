@@ -1,8 +1,6 @@
 package com.crypt.storage.DAO;
 
 import com.crypt.storage.model.User;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -10,21 +8,22 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Date;
 
 //Class for user CRUD operations.
 public class UserManagment {
     public static final String listURL = "C:/esdb/userList.txt";
     public static final String userDatabase = "C:/esdb/users/";
-    private BufferedWriter writer;
-    private BufferedReader read;
 
     public UserManagment() {
         try {
             File list = new File(listURL);
             File root = new File(userDatabase);
-            if (!list.exists()) { list.createNewFile(); }
-            if (!root.exists()) { root.mkdir(); }
+            boolean f = false;
+            boolean d = false;
+            if (!list.exists()) { f = list.createNewFile(); }
+            if (!root.exists()) { d = root.mkdir(); }
+            if (!f || !d) { System.out.println("Error creating root directory and user list"); }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -33,10 +32,11 @@ public class UserManagment {
     public boolean createUser(String username, String hash, String email) {
         try {
             String user = username + ":" + hash + ":" + email;
-            writer = new BufferedWriter(new FileWriter(listURL, true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(listURL, true));
             writer.write(user); writer.newLine(); writer.close();
             System.out.println("Created " + username + " user account.");
             return true;
+
         } catch (IOException ex) {
             System.out.println("Error creating " + username + " user account.");
         }
@@ -52,6 +52,7 @@ public class UserManagment {
             } else {
                 System.out.println(username + " personal directory already exists.");
             }
+
         } catch (SecurityException se) {
             System.out.println("Error creating " + username + " personal directory.");
         }
@@ -61,7 +62,7 @@ public class UserManagment {
     public String getPassword(String username) {
         String pass="";
         try {
-            read = new BufferedReader(new FileReader(listURL));
+            BufferedReader read = new BufferedReader(new FileReader(listURL));
             String next = read.readLine();
             while (next != null) {
                 if (next.split(":")[0].equals(username)) {
@@ -70,6 +71,7 @@ public class UserManagment {
                 next = read.readLine();
             }
             read.close();
+
         } catch (IOException ex) {
             System.out.println("Error checking password.");
         }
@@ -80,17 +82,14 @@ public class UserManagment {
         ArrayList<String[]> list = new ArrayList<>();
         File folder = new File(UserManagment.userDatabase + username);
         File[] dir = folder.listFiles();
-        String[] aux;
-
         try {
             for (File file : dir) {
-                aux = new String[3];
+                String[] aux = new String[3];
                 aux[0] = file.getName();
                 aux[1] = (file.length() < 1000000 ) ? file.length()/1000 + " KB" : file.length()/1000000 + " MB";
                 aux[2] = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()),
                         ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM,
                         FormatStyle.SHORT));
-
                 list.add(aux);
             }
 
@@ -103,6 +102,13 @@ public class UserManagment {
 
     public User invalidatePassword(User user) {
         user.setPassword("");
+        user.setMatchingPassword("");
         return user;
+    }
+
+    public void invalidateUser(User user) {
+        user.setUsername("");
+        invalidatePassword(user);
+        user.setEmail("");
     }
 }

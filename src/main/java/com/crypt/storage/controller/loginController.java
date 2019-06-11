@@ -20,7 +20,6 @@ public class loginController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private UserManagment userManagment = new UserManagment();
     private FileManagment fileManagment = new FileManagment();
 
@@ -35,14 +34,13 @@ public class loginController {
     public String processAddSubmit(@ModelAttribute("user") User user, Model model,
                                    BindingResult bindingResult, HttpSession session) {
         if(bindingResult.hasErrors()){
-            user = null;
+            userManagment.invalidateUser(user);
             return "redirect:/error";
         }
-
         if (!passwordEncoder.matches(user.getPassword(), userManagment.getPassword(user.getUsername()))) {
             System.out.println("Login for user "+user.getUsername()+" failed.");
             model.addAttribute("loginFailed", true);
-            user = null;
+            userManagment.invalidateUser(user);
             return "/index";
         }
         System.out.println("Login for user "+user.getUsername()+" was successful.");
@@ -50,7 +48,7 @@ public class loginController {
         System.out.println("Key login: "+ secret);
         session.setAttribute("secret", secret);
         session.setAttribute("user", userManagment.invalidatePassword(user));
-        user=null;
+        userManagment.invalidateUser(user);
         return "redirect:/files/list";
     }
 

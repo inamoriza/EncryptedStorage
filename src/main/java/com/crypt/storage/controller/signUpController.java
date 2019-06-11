@@ -8,12 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.crypto.SecretKey;
 import javax.validation.Valid;
 
 @Controller
@@ -21,7 +18,6 @@ public class signUpController  {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private UserManagment userManagment = new UserManagment();
     private FileManagment fileManagment = new FileManagment();
 
@@ -32,13 +28,11 @@ public class signUpController  {
     }
 
     @RequestMapping(value="/signUp", method= RequestMethod.POST)
-    public String processAddSubmit(@ModelAttribute("user") @Valid User user,
-                                   BindingResult bindingResult, Errors errors) {
+    public String processAddSubmit(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             System.out.println("Binding Error");
             return "/signUp";
         }
-
         fileManagment.generateSecretKey(user.getPassword(),user.getUsername());
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
