@@ -85,10 +85,10 @@
                         <td class="pt-3-half" contenteditable="false" th:text="${file[1]}"></td>
                         <td class="pt-3-half" contenteditable="false" th:text="${file[2]}"></td>
                         <td>
-                            <span><button type="button" class="btn btn-success btn-rounded btn-sm my-0">Download</button></span>
+                            <span><a th:href="@{/files/list(df=${file[0]})}" class="btn btn-success btn-rounded btn-sm my-0">Download</a></span>
                         </td>
                         <td>
-                            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                            <span><a th:href="@{/files/list(rf=${file[0]})}" class="btn btn-danger btn-rounded btn-sm my-0">Remove</a></span>
                         </td>
                     </tr>
                 </th:block>
@@ -99,10 +99,6 @@
                 var $TABLE = $('#table');
                 var $BTN = $('#export-btn');
                 var $EXPORT = $('#export');
-
-                $('.table-remove').click(function () {
-                    $(this).parents('tr').detach();
-                });
 
                 $('.table-up').click(function () {
                     var $row = $(this).parents('tr');

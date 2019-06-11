@@ -12,17 +12,14 @@ import java.util.ArrayList;
 //Class for user CRUD operations.
 public class UserManagment {
     public static final String listURL = "C:/esdb/userList.txt";
-    public static final String userDatabase = "C:/esdb/users/";
+    public static final String userDB = "C:/esdb/users/";
 
     public UserManagment() {
         try {
             File list = new File(listURL);
-            File root = new File(userDatabase);
-            boolean f = false;
-            boolean d = false;
-            if (!list.exists()) { f = list.createNewFile(); }
-            if (!root.exists()) { d = root.mkdir(); }
-            if (!f || !d) { System.out.println("Error creating root directory and user list"); }
+            File root = new File(userDB);
+            if (!list.exists()) { list.createNewFile(); }
+            if (!root.exists()) { root.mkdir(); }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -44,7 +41,7 @@ public class UserManagment {
     }
 
     public boolean createUserDir(String username) {
-        File dir = new File(userDatabase + username);
+        File dir = new File(userDB + username);
         try {
             if (!dir.exists()) {
                 System.out.println("Creating " + username + " personal directory...");
@@ -80,7 +77,7 @@ public class UserManagment {
 
     public ArrayList<String[]> listUserDir(String username) {
         ArrayList<String[]> list = new ArrayList<>();
-        File folder = new File(UserManagment.userDatabase + username);
+        File folder = new File(UserManagment.userDB + username);
         File[] dir = folder.listFiles();
         try {
             for (File file : dir) {

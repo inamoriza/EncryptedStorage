@@ -3,17 +3,17 @@ package com.crypt.storage.controller;
 import com.crypt.storage.DAO.FileManagment;
 import com.crypt.storage.DAO.UserManagment;
 import com.crypt.storage.model.User;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import javax.crypto.SecretKey;
+
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 @Controller
 @RequestMapping("/files")
@@ -37,24 +37,43 @@ public class listController {
         try {
             User user = (User) session.getAttribute("user");
             byte[] cf = fileManagment.encryptFile((SecretKeySpec) session.getAttribute("secret"), file.getBytes());
-            FileOutputStream fs = new FileOutputStream(UserManagment.userDatabase
-                    + user.getUsername() + "/" + FilenameUtils.removeExtension(file.getOriginalFilename()));
+            FileOutputStream fs = new FileOutputStream(UserManagment.userDB
+                    + user.getUsername() + "/" + file.getOriginalFilename());
             fs.write(cf);
             fs.close();
 
-            SecretKey key = (SecretKey) session.getAttribute("secret");
-            System.out.println("key: "+ key);
-            SecretKeySpec spec = new SecretKeySpec(key.getEncoded(), "AES");
-            byte [] decryptedFile = fileManagment.decryptFile(spec,cf);
-
-            fs = new FileOutputStream(UserManagment.userDatabase
-                    + user.getUsername() + "/" +"desencriptado-"+ file.getOriginalFilename());
-            fs.write(decryptedFile);
-            fs.close();
-
         } catch (IOException ex) {
+            System.out.println("Input/Output error");
             ex.printStackTrace();
         }
+        return "redirect:/files/list";
+    }
+
+    @RequestMapping(value="/list", params = "df", method = RequestMethod.GET)
+    public void downloadFile(@RequestParam(value = "df") String filename, HttpSession session,
+                             HttpServletResponse response) {
+        response.setContentType("application/force-download");
+        response.setHeader("Content-disposition", "attachment; filename="+filename);
+        try {
+            User user = (User) session.getAttribute("user");
+            InputStream is = new FileInputStream(UserManagment.userDB + user.getUsername() + "/" + filename);
+            byte [] decryptedFile = fileManagment.decryptFile((SecretKeySpec) session.getAttribute("secret"),
+                    IOUtils.toByteArray(is));
+            is = new ByteArrayInputStream(decryptedFile);
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+            response.getOutputStream().close();
+            is.close();
+
+        } catch (IOException ex) {
+            System.out.println("Input/Output error");
+            ex.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value="/list", params = "rf", method = RequestMethod.GET)
+    public String removeFile(@RequestParam(value = "rf") String file, HttpSession session) {
+        System.out.println("eliminando"+file);
         return "redirect:/files/list";
     }
 }
