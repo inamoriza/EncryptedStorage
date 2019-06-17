@@ -54,8 +54,8 @@ public class listController {
                              HttpServletResponse response) {
         response.setContentType("application/force-download");
         response.setHeader("Content-disposition", "attachment; filename="+filename);
+        User user = (User) session.getAttribute("user");
         try {
-            User user = (User) session.getAttribute("user");
             InputStream is = new FileInputStream(UserManagment.userDB + user.getUsername() + "/" + filename);
             byte [] decryptedFile = fileManagment.decryptFile((SecretKeySpec) session.getAttribute("secret"),
                     IOUtils.toByteArray(is));
@@ -72,8 +72,16 @@ public class listController {
     }
 
     @RequestMapping(value="/list", params = "rf", method = RequestMethod.GET)
-    public String removeFile(@RequestParam(value = "rf") String file, HttpSession session) {
-        System.out.println("eliminando"+file);
+    public String removeFile(@RequestParam(value = "rf") String filename, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        filename = UserManagment.userDB + user.getUsername() + "/" + filename;
+        System.out.println(filename);
+        File file = new File(filename);
+        if (file.delete()) {
+            System.out.println("Deleted " + filename);
+        } else {
+            System.out.println("Error while deleting " + filename);
+        }
         return "redirect:/files/list";
     }
 }
