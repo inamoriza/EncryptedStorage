@@ -29,39 +29,21 @@
 </head>
 <body>
 <!-- form login -->
-<form action="#" th:action="@{/}" th:object="${user}" method="post" class="text-center border border-light p-5">
+<form action="#" th:action="@{/verify}" th:object="${user}" method="post" class="text-center border border-light p-5">
 
-    <p class="h4 mb-4">Sign in</p>
+    <p class="h4 mb-4">Change Password</p>
 
-    <!-- Username -->
-    <input type="text" id="username" class="form-control mb-4" th:field="*{username}" placeholder="Username">
+    <!-- Code -->
+    <input type="text" id="code" class="form-control mb-4" th:field=*{username} placeholder="Verification code" required>
 
     <!-- Password -->
-    <input type="password" id="password" class="form-control mb-4" th:field="*{password}" placeholder="Password">
+    <input type="password" id="password" class="form-control mb-4" th:field=*{password} placeholder="New password" required>
 
-    <p th:if="${loginFailed}" class="text-danger">Login Failed</p>
+    <!-- ConfirmPassword -->
+    <input type="password" id="matchingPassword" class="form-control mb-4" th:field=*{matchingPassword} placeholder="Confirm new password" required>
 
-    <div class="d-flex justify-content-around">
-        <div>
-            <!-- Remember me -->
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
-                <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
-            </div>
-        </div>
-        <div>
-            <!-- Forgot password -->
-            <a href="/changePassword">Forgot password?</a>
-        </div>
-    </div>
-
-    <!-- Sign in button -->
-    <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
-
-    <!-- Register -->
-    <p>Not a member?
-        <a href="/signUp">Register</a>
-    </p>
+    <!-- Submit -->
+    <button class="btn btn-info btn-block my-4" type="submit">Verify</button>
 
 </form>
 

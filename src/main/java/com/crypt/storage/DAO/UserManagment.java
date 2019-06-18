@@ -1,6 +1,9 @@
 package com.crypt.storage.DAO;
 
 import com.crypt.storage.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 //Class for user CRUD operations.
 public class UserManagment {
     public static final String listURL = "C:/esdb/userList.txt";
+    private static final String tmplistURL = "C:/esdb/tmpUserList.txt";
     public static final String userDB = "C:/esdb/users/";
 
     public UserManagment() {
@@ -73,6 +77,57 @@ public class UserManagment {
             System.out.println("Error checking password.");
         }
         return pass;
+    }
+
+    public boolean changePassword(String username, String password) {
+        String email = this.getEmail(username);
+        try {
+            File inputFile = new File(listURL);
+            File tempFile = new File(tmplistURL);
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+            String currentLine;
+
+            while((currentLine = reader.readLine()) != null) {
+                String user = currentLine.split(":")[0];
+                if(user.equals(username)) continue;
+                writer.write(currentLine + System.getProperty("line.separator"));
+            }
+            writer.close();
+            reader.close();
+            boolean deleted = inputFile.delete();
+            if (!deleted) {
+                System.out.println("Error Deleting File");
+            }
+            boolean successful = tempFile.renameTo(inputFile);
+            if (!successful) {
+                System.out.println("Error Renaming File");
+            }
+
+        } catch (IOException ex) {
+            System.out.println("Error Changing Password");
+            ex.printStackTrace();
+        }
+        return this.createUser(username, password, email);
+    }
+
+    public String getEmail(String username) {
+        String email="";
+        try {
+            BufferedReader read = new BufferedReader(new FileReader(listURL));
+            String next = read.readLine();
+            while (next != null) {
+                if (next.split(":")[0].equals(username)) {
+                    email = next.split(":")[2];
+                }
+                next = read.readLine();
+            }
+            read.close();
+
+        } catch (IOException ex) {
+            System.out.println("Error checking email.");
+        }
+        return email;
     }
 
     public ArrayList<String[]> listUserDir(String username) {

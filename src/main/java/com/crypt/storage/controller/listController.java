@@ -59,11 +59,12 @@ public class listController {
             InputStream is = new FileInputStream(UserManagment.userDB + user.getUsername() + "/" + filename);
             byte [] decryptedFile = fileManagment.decryptFile((SecretKeySpec) session.getAttribute("secret"),
                     IOUtils.toByteArray(is));
+            is.close();
             is = new ByteArrayInputStream(decryptedFile);
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            is.close();
             response.flushBuffer();
             response.getOutputStream().close();
-            is.close();
 
         } catch (IOException ex) {
             System.out.println("Input/Output error");
