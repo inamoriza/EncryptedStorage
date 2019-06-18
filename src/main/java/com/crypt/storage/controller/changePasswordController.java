@@ -36,7 +36,7 @@ public class changePasswordController {
 
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
     public String submit(@ModelAttribute("user") User user, HttpSession session) {
-        if (!passwordEncoder.matches(user.getPassword(), userManagment.getPassword(user.getUsername()))) {
+        if (userManagment.getEmail(user.getUsername()).equals("")) {
             System.out.println("Invalid Account");
             return "/changePassword";
         }
